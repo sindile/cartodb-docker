@@ -1,0 +1,28 @@
+*:80
+
+tls off
+log stdout
+errors stderr
+
+gzip
+root /app/public/
+
+rewrite {
+    if {path} is /
+    to /proxy_backend/{uri}
+}
+
+rewrite /uploads {
+  r /
+  to {$ENV_RAILS_PUBLIC_UPLOADS_PATH}/{1}
+}
+
+rewrite {
+  to {path} /proxy_backend/{uri}
+}
+
+proxy /proxy_backend http://backend {
+  without /proxy_backend
+  transparent
+  header_upstream X-Forwarded-Proto https
+}

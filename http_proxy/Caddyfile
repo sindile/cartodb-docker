@@ -1,0 +1,50 @@
+*.{$CARTODB_DOMAIN}:443 {
+  tls self_signed
+
+  log stdout
+  errors stderr
+
+  gzip
+
+  proxy / http://assets {
+    transparent
+  }
+}
+
+{$CARTODB_DOMAIN}:443 {
+  tls self_signed
+
+  log stdout
+  errors stderr
+
+  gzip
+
+  proxy / http://assets {
+    transparent
+  }
+
+  proxy /mapsapi/ http://mapsapi {
+    without /mapsapi
+    transparent
+    header_upstream X-Forwarded-Proto https
+  }
+
+  proxy /sqlapi/ http://sqlapi {
+    without /sqlapi
+    transparent
+    header_upstream X-Forwarded-Proto https
+  }
+}
+
+{$CARTODB_DOMAIN}:80 {
+  tls off
+
+  log stdout
+  errors stderr
+
+  gzip
+
+  proxy / http://assets {
+    transparent
+  }
+}
