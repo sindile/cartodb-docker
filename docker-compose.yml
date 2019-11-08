@@ -12,6 +12,9 @@ x-environment: &default_env
   RAILS_ENV: production
   NODE_ENV: production
   DEBUG: 1
+  DEFAULT_USER_LOGIN: cartodb
+  DEFAULT_USER_EMAIL: cartodb@example.com
+  DEFAULT_USER_PASSWORD: cartodb
   POSTGRES_USER: cartodb
   POSTGRES_PASSWORD: cartodb
   POSTGRES_DB: cartodb
@@ -84,6 +87,7 @@ services:
     volumes:
       - upload_data:/uploads
     depends_on:
+      - backend
       - db
       - redis
       - mapsapi

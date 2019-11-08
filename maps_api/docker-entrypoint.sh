@@ -59,7 +59,7 @@ var config = {
     ,postgres_auth_user: 'cartodb_user_<%= user_id %>'
     ,postgres_auth_pass: '<%= user_password %>'
     ,postgres: {
-        type: "postgis"
+        type: "postgis",
         user: "publicuser",
         password: "public",
         host: '${POSTGRES_HOST}',
@@ -309,5 +309,5 @@ module.exports = config;
 
 EOT
 
-echo "Run APP"
+echo "Run APP (env $APP_ENV)"
 exec "$@"

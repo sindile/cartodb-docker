@@ -2,6 +2,7 @@
 
 set -ex
 
+echo "# Writing configuration file #"
 echo "Setup config/app_config.yml"
 ruby <<-EOF
   require 'yaml'
@@ -42,19 +43,19 @@ ruby <<-EOF
   config['session_domain'] = ENV.fetch('CARTODB_SESSION_DOMAIN', CARTODB_DOMAIN)
   config['app_assets']['asset_host'] = ENV.fetch('CARTODB_ASSETS_HOST', "//#{CARTODB_DOMAIN}")
 
-  tiler_internal_uri = URI(ENV['CARTODB_TILER_INTERNAL_URI'] || 'http://${CARTODB_DOMAIN}:8081')
+  tiler_internal_uri = URI(ENV['CARTODB_TILER_INTERNAL_URI'] || "http://#{CARTODB_DOMAIN}:8081")
   config['tiler']['internal']['domain'] = tiler_internal_uri.host
   config['tiler']['internal']['host'] = tiler_internal_uri.host
   config['tiler']['internal']['protocol'] = tiler_internal_uri.scheme
   config['tiler']['internal']['port'] = tiler_internal_uri.port
 
-  tiler_private_uri = URI(ENV['CARTODB_TILER_PRIVATE_URI'] || 'http://${CARTODB_DOMAIN}:8081')
+  tiler_private_uri = URI(ENV['CARTODB_TILER_PRIVATE_URI'] || "http://#{CARTODB_DOMAIN}:8081")
   config['tiler']['private']['domain'] = tiler_private_uri.host
   config['tiler']['private']['host'] = tiler_private_uri.host
   config['tiler']['private']['protocol'] = tiler_private_uri.scheme
   config['tiler']['private']['port'] = tiler_private_uri.port
 
-  tiler_public_uri = URI(ENV['CARTODB_TILER_PUBLIC_URI'] || 'http://${CARTODB_DOMAIN}:8081')
+  tiler_public_uri = URI(ENV['CARTODB_TILER_PUBLIC_URI'] || "http://#{CARTODB_DOMAIN}:8081")
   config['tiler']['public']['domain'] = tiler_public_uri.host
   config['tiler']['public']['host'] = tiler_public_uri.host
   config['tiler']['public']['protocol'] = tiler_public_uri.scheme
@@ -69,13 +70,13 @@ ruby <<-EOF
     config.delete 'invalidation_service'
   end
 
-  sql_api = URI(ENV.fetch('CARTODB_SQL_API_PRIVATE_URI', 'http://${CARTODB_DOMAIN}/api/v1/sql'))
+  sql_api = URI(ENV.fetch('CARTODB_SQL_API_PRIVATE_URI', "http://#{CARTODB_DOMAIN}/api/v1/map"))
   config['sql_api']['private']['protocol'] = sql_api.scheme
   config['sql_api']['private']['domain'] = sql_api.host
   config['sql_api']['private']['endpoint'] = sql_api.path
   config['sql_api']['private']['port'] = sql_api.port
 
-  sql_api = URI(ENV.fetch('CARTODB_SQL_API_PUBLIC_URI', 'http://${CARTODB_DOMAIN}/api/v2/sql'))
+  sql_api = URI(ENV.fetch('CARTODB_SQL_API_PUBLIC_URI', "http://#{CARTODB_DOMAIN}/api/v2/sql"))
   config['sql_api']['public']['protocol'] = sql_api.scheme
   config['sql_api']['public']['domain'] = sql_api.host
   config['sql_api']['public']['endpoint'] = sql_api.path
@@ -110,6 +111,13 @@ ruby <<-EOF
 
   File.open(APP_ROOT.join('config/database.yml'), 'w') { |f| f.write(configs.to_yaml) }
 EOF
+
+echo "# Initialize database"
+# bundle exec rake db:create`
+bundle exec rake db:migrate
+
+echo "# Create default user ${DEFAULT_USER_LOGIN} (${DEFAULT_USER_EMAIL})"
+script/create_dev_user "${DEFAULT_USER_LOGIN}" "${DEFAULT_USER_PASSWORD}" "${DEFAULT_USER_EMAIL}"
 
 echo "Run APP"
 exec "$@"

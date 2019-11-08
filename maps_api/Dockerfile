@@ -1,6 +1,5 @@
 # vim:set ft=dockerfile:
 FROM node:10-buster-slim AS build
-LABEL maintainer="Andrei Subbota <subbota@gmail.com>"
 
 ARG APP_ENV=production
 ARG MAPS_API_VERSION=7.1.0
@@ -51,6 +50,8 @@ WORKDIR /app
 
 COPY ./docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+RUN sh -c "npm install --verbose"
 
 EXPOSE 80
 

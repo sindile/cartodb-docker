@@ -34,6 +34,16 @@
     transparent
     header_upstream X-Forwarded-Proto https
   }
+
+  proxy api/v2/sql http://sqlapi {
+    transparent
+    header_upstream X-Forwarded-Proto https
+  }
+
+  proxy api/v1/map http://mapsapi {
+    transparent
+    header_upstream X-Forwarded-Proto https
+  }
 }
 
 {$CARTODB_DOMAIN}:80 {
