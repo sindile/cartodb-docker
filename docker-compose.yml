@@ -28,10 +28,10 @@ x-environment: &default_env
   CARTODB_SECRET_TOKEN: cb20d3bfd6c481947984ec368df53784aa2349cde21dc5c771c3a3b5b71bb674
   CARTODB_SUBDOMAINLESS_URLS: 'true'
   CARTODB_TILER_INTERNAL_URI: 'http://mapsapi:80'
-  CARTODB_TILER_PRIVATE_URI: 'https://cartodb.localhost.lan/mapsapi/'
-  CARTODB_TILER_PUBLIC_URI: 'https://cartodb.localhost.lan/mapsapi/'
-  CARTODB_SQL_API_PUBLIC_URI: 'https://cartodb.localhost.lan/sqlapi/'
-  CARTODB_SQL_API_PRIVATE_URI: 'https://cartodb.localhost.lan/sqlapi/'
+  CARTODB_TILER_PRIVATE_URI: 'https://cartodb.localhost.lan/'
+  CARTODB_TILER_PUBLIC_URI: 'https://cartodb.localhost.lan/'
+  CARTODB_SQL_API_PUBLIC_URI: 'https://cartodb.localhost.lan/'
+  CARTODB_SQL_API_PRIVATE_URI: 'https://cartodb.localhost.lan/'
   # CARTODB_INVALIDATION_SERVICE_URI: redis://redis:6379/
 
 services:
@@ -79,6 +79,12 @@ services:
       - sqlapi
       - mapsapi
     command: unicorn -l 0.0.0.0:80
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 10s
   worker:
     image: cartodb-app
     build:

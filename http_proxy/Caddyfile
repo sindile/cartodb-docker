@@ -23,6 +23,16 @@
     transparent
   }
 
+  rewrite {
+    r /(user/.*)?/api/v2/sql
+    to /sqlapi/{uri}
+  }
+
+  rewrite {
+    r /(user/.*)?/api/v1/map
+    to /mapsapi/{uri}
+  }
+
   proxy /mapsapi/ http://mapsapi {
     without /mapsapi
     transparent
@@ -31,16 +41,6 @@
 
   proxy /sqlapi/ http://sqlapi {
     without /sqlapi
-    transparent
-    header_upstream X-Forwarded-Proto https
-  }
-
-  proxy api/v2/sql http://sqlapi {
-    transparent
-    header_upstream X-Forwarded-Proto https
-  }
-
-  proxy api/v1/map http://mapsapi {
     transparent
     header_upstream X-Forwarded-Proto https
   }

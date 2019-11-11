@@ -114,10 +114,10 @@ EOF
 
 echo "# Initialize database"
 # bundle exec rake db:create`
-bundle exec rake db:migrate
-
-echo "# Create default user ${DEFAULT_USER_LOGIN} (${DEFAULT_USER_EMAIL})"
-script/create_dev_user "${DEFAULT_USER_LOGIN}" "${DEFAULT_USER_PASSWORD}" "${DEFAULT_USER_EMAIL}"
+# bundle exec rake db:migrate
+#
+# echo "# Create default user ${DEFAULT_USER_LOGIN} (${DEFAULT_USER_EMAIL})"
+# script/create_dev_user "${DEFAULT_USER_LOGIN}" "${DEFAULT_USER_PASSWORD}" "${DEFAULT_USER_EMAIL}"
 
 echo "Run APP"
 exec "$@"

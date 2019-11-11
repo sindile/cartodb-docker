@@ -28,12 +28,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2-dev \
     liblwgeom-2.3.0 postgis postgresql-10-postgis-2.4 postgresql-10-postgis-2.4-scripts \
     libpq5 libpq-dev \
-    postgresql-contrib postgresql-server-dev-10 postgresql-plpython-10 \
-    sudo \
-    git && \
+    postgresql-contrib postgresql-server-dev-10 postgresql-plpython-10 postgresql-10-plproxy \
+    sudo ruby git && \
     rm -rf /var/lib/apt/lists/* && \
     git clone --depth 1 --branch $CDB_VALID_VERSION git://github.com/CartoDB/cartodb-postgresql.git && \
     cd cartodb-postgresql && \
+    make all install && \
+    cd /tmp && \
+    git clone https://github.com/CartoDB/dataservices-api.git && \
+    cd dataservices-api/client && \
     make all install && \
     mkdir -p /docker-entrypoint-initdb.d
 
