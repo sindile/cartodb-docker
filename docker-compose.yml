@@ -13,7 +13,7 @@ x-environment: &default_env
   NODE_ENV: production
   DEBUG: 1
   DEFAULT_USER_LOGIN: cartodb
-  DEFAULT_USER_EMAIL: cartodb@example.com
+  DEFAULT_USER_EMAIL: example+cartodb@gmail.com
   DEFAULT_USER_PASSWORD: cartodb
   POSTGRES_USER: cartodb
   POSTGRES_PASSWORD: cartodb
@@ -27,12 +27,14 @@ x-environment: &default_env
   CARTODB_SECRET_KEY_BASE: 1574f92e90957a2d3e6c9dacd5c8dac587157e8b290792de2dddc7ad7fd9f70b351665201de50580dfbc6cb6462696d4b844b30357dc0ee7a1767b04ea9f4c0e
   CARTODB_SECRET_TOKEN: cb20d3bfd6c481947984ec368df53784aa2349cde21dc5c771c3a3b5b71bb674
   CARTODB_SUBDOMAINLESS_URLS: 'true'
-  CARTODB_TILER_INTERNAL_URI: 'http://mapsapi:80'
+  CARTODB_TILER_INTERNAL_URI: 'http://mapsapi/'
   CARTODB_TILER_PRIVATE_URI: 'https://cartodb.localhost.lan/'
   CARTODB_TILER_PUBLIC_URI: 'https://cartodb.localhost.lan/'
   CARTODB_SQL_API_PUBLIC_URI: 'https://cartodb.localhost.lan/'
   CARTODB_SQL_API_PRIVATE_URI: 'https://cartodb.localhost.lan/'
-  # CARTODB_INVALIDATION_SERVICE_URI: redis://redis:6379/
+  HERE_APP_ID: heregeocoderappid
+  HERE_APP_CODE: heregeocoderappcode
+  MAPBOX_API_TOKEN: mapboxapitoken
 
 services:
   proxy: # The container to proxy all HTTP and HTTP request to container with static

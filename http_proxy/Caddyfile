@@ -24,12 +24,12 @@
   }
 
   rewrite {
-    r /(user/.*)?/api/v2/sql
+    r /(user/.*/)?api/v2/sql
     to /sqlapi/{uri}
   }
 
   rewrite {
-    r /(user/.*)?/api/v1/map
+    r /(user/.*/)?api/v1/map([^s]|$)
     to /mapsapi/{uri}
   }
 

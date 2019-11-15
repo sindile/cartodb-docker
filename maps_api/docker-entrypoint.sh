@@ -10,7 +10,7 @@ var config = {
     ,host: '0.0.0.0'
     ,uv_threadpool_size: undefined
     ,gc_interval: 10000
-    ,user_from_host: '^(.*)\\.${CARTODB_DOMAIN}$'
+    ,user_from_host: '^(.*)$'
     ,routes: {
         v1: {
             paths: [
@@ -193,7 +193,7 @@ var config = {
             //  - running an standalone server without any dependency on external services
             inlineExecution: false,
             // where the SQL API is running, it will use a custom Host header to specify the username.
-            endpoint: 'http://127.0.0.1:8080/api/v2/sql/job',
+            endpoint: '${CARTODB_SQL_PRIVATE_URI}/api/v2/sql/job',
             // the template to use for adding the host header in the batch api requests
             hostHeaderTemplate: '{{=it.username}}.localhost.lan'
         },

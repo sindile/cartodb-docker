@@ -11,6 +11,7 @@ build: ## Build containers
 
 seed: ## Migrate and create
 				docker-compose run --rm backend bundle exec rake db:migrate
+				docker-compose run --rm backend bundle exec rake cartodb:sync_tables[true] cartodb:features:add_feature_flag['carto-connectors'] cartodb:features:enable_feature_for_all_users['carto-connectors'] cartodb:connectors:create_providers
 				docker-compose run --rm backend sh -c 'script/create_dev_user "$$DEFAULT_USER_LOGIN" "$$DEFAULT_USER_PASSWORD" "$$DEFAULT_USER_EMAIL"'
 
 run: ## Run all containers

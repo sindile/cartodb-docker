@@ -21,6 +21,7 @@ ruby <<-EOF
   config['secret_key_base'] = ENV.fetch('CARTODB_SECRET_KEY_BASE', SecureRandom.hex(64))
   config['password_secret'] = ENV.fetch('CARTODB_PASSWORD_SECRET', SecureRandom.hex(64))
   config['account_host'] = ENV.fetch('CARTODB_ACCOUNT_HOST', CARTODB_DOMAIN)
+  config['cartodb_com_hosted'] = false
   config['vizjson_cache_domains'] = Array(ENV.fetch('CARTODB_SESSION_DOMAIN', CARTODB_DOMAIN))
   config['subdomainless_urls'] = [true, 'yes', 'true', '1'].include?(ENV.fetch('CARTODB_SUBDOMAINLESS_URLS', 'false'))
   config['aggregation_tables'] = {
@@ -92,6 +93,17 @@ ruby <<-EOF
   config['metrics']['hubspot']['token'] = ENV['HUBSPOT_TOKEN']
   config['metrics']['hubspot']['events_host'] = ENV.fetch('HUBSPOT_URL', 'http://track.hubspot.com')
 
+  config['geocoder']['api']['host'] = ENV.fetch('POSTGRES_HOST', 'db')
+  config['geocoder']['api']['user'] = ENV.fetch('POSTGRES_USER', 'db')
+
+  config['enabled'] = {
+    'geocoder_internal' => true,
+    'hires_geocoder'    => false,
+    'isolines'          => false,
+    'routing'           => false,
+    'data_observatory'  => true
+  }
+
   File.open(APP_ROOT.join('config/app_config.yml'), 'w') { |f| f.write({'production' => config}.to_yaml) }
 EOF
 
@@ -112,12 +124,8 @@ ruby <<-EOF
   File.open(APP_ROOT.join('config/database.yml'), 'w') { |f| f.write(configs.to_yaml) }
 EOF
 
-echo "# Initialize database"
-# bundle exec rake db:create`
-# bundle exec rake db:migrate
-#
-# echo "# Create default user ${DEFAULT_USER_LOGIN} (${DEFAULT_USER_EMAIL})"
-# script/create_dev_user "${DEFAULT_USER_LOGIN}" "${DEFAULT_USER_PASSWORD}" "${DEFAULT_USER_EMAIL}"
+echo 'Wait for database'
+while ! nc -z $POSTGRES_HOST 5432; do sleep 1; done
 
 echo "Run APP"
 exec "$@"

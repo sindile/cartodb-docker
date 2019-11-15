@@ -57,6 +57,7 @@ RUN apk add --no-cache --upgrade build-base \
                                 curl \
                                 zlib-dev \
                                 linux-headers \
+                                bind-tools \
                                 ca-certificates && \
     gem install --no-document compass && \
     mkdir -p config && \
