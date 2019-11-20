@@ -48,10 +48,10 @@ RUN git clone -b $MAPS_API_VERSION -- https://github.com/CartoDB/Windshaft-carto
 
 WORKDIR /app
 
+RUN sh -c "npm install --verbose"
+
 COPY ./docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-RUN sh -c "npm install --verbose"
 
 EXPOSE 80
 

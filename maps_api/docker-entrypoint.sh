@@ -267,8 +267,8 @@ var config = {
     ,useProfiler:false
     ,serverMetadata: {
       cdn_url: {
-        http: 'api.cartocdn.com',
-        https: 'cartocdn.global.ssl.fastly.net'
+        http: undefined, // 'api.cartocdn.com',
+        https: undefined, // 'cartocdn.global.ssl.fastly.net'
       }
     }
     ,health: {

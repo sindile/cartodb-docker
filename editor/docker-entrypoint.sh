@@ -15,6 +15,7 @@ ruby <<-EOF
 
   configs = YAML.load_file(APP_ROOT.join('config/app_config.yml.sample'))
   config  = configs['production']
+  config['cdn_url'] = nil
   config['http_port'] = ENV.fetch('CARTODB_HTTP_PORT', 3000)
   config['https_port'] = ENV.fetch('CARTODB_HTTPS_PORT', 443)
   config['secret_token'] = ENV.fetch('CARTODB_SECRET_TOKEN', SecureRandom.hex(32))
