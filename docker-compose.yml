@@ -12,6 +12,7 @@ x-environment: &default_env
   RAILS_ENV: production
   NODE_ENV: production
   DEBUG: 1
+  LOG_LEVEL: debug
   DEFAULT_USER_LOGIN: cartodb
   DEFAULT_USER_EMAIL: example+cartodb@gmail.com
   DEFAULT_USER_PASSWORD: cartodb
@@ -31,10 +32,18 @@ x-environment: &default_env
   CARTODB_TILER_PRIVATE_URI: 'https://cartodb.localhost.lan/'
   CARTODB_TILER_PUBLIC_URI: 'https://cartodb.localhost.lan/'
   CARTODB_SQL_API_PUBLIC_URI: 'https://cartodb.localhost.lan/'
-  CARTODB_SQL_API_PRIVATE_URI: 'https://cartodb.localhost.lan/'
+  CARTODB_SQL_API_PRIVATE_URI: 'http://sqlapi/'
   HERE_APP_ID: heregeocoderappid
   HERE_APP_CODE: heregeocoderappcode
   MAPBOX_API_TOKEN: mapboxapitoken
+
+x-logging: &default_logging
+  options:
+    max-size: '200k'
+    max-file: '5'
+    labels: "{{.Name}}"
+  driver: json-file
+
 
 services:
   proxy: # The container to proxy all HTTP and HTTP request to container with static
@@ -51,6 +60,7 @@ services:
       - assets
     links:
       - assets
+    logging: *default_logging
   assets: # The container with assets and proxy to the backend
     image: cartodb-app
     build:
@@ -65,6 +75,7 @@ services:
     volumes:
       - upload_data:/uploads
     command: caddy -conf /etc/caddy/Caddyfile
+    logging: *default_logging
   backend: # Cartodb UI
     image: cartodb-app
     build:
@@ -87,6 +98,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    logging: *default_logging
   worker:
     image: cartodb-app
     build:
@@ -105,6 +117,7 @@ services:
       - sqlapi
       - mapsapi
     command: bundle exec script/resque
+    logging: *default_logging
   sqlapi:
     image: cartodb-sqlapi
     build:
@@ -116,6 +129,7 @@ services:
     links:
       - db
       - redis
+    logging: *default_logging
   mapsapi:
     image: cartodb-mapsapi
     build:
@@ -127,15 +141,20 @@ services:
     links:
       - db
       - redis
+      - sqlapi
+    logging: *default_logging
   redis:
     image: redis:4.0-alpine
     volumes:
       - redis_data:/data
+    logging:
+      driver: none
   db:
     build:
       context: postgresql
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    logging: *default_logging
 
 volumes:
   postgres_data:

@@ -72,7 +72,7 @@ ruby <<-EOF
     config.delete 'invalidation_service'
   end
 
-  sql_api = URI(ENV.fetch('CARTODB_SQL_API_PRIVATE_URI', "http://#{CARTODB_DOMAIN}/api/v1/map"))
+  sql_api = URI(ENV.fetch('CARTODB_SQL_API_PUBLIC_URI', "http://#{CARTODB_DOMAIN}/api/v1/map"))
   config['sql_api']['private']['protocol'] = sql_api.scheme
   config['sql_api']['private']['domain'] = sql_api.host
   config['sql_api']['private']['endpoint'] = sql_api.path
@@ -99,7 +99,7 @@ ruby <<-EOF
 
   config['enabled'] = {
     'geocoder_internal' => true,
-    'hires_geocoder'    => false,
+    'hires_geocoder'    => true,
     'isolines'          => false,
     'routing'           => false,
     'data_observatory'  => true

@@ -5,6 +5,7 @@ ARG APP_ENV=production
 ARG MAPS_API_VERSION=7.1.0
 ARG MAPNIK_VERSION=v3.0.22
 ARG MAPNIK_NODE_VERSION=v3.6.2
+ARG CAMSHAFT_VERSION=0.65.0
 
 ENV NODE_ENV=$APP_ENV \
     PATH=$PATH:/vendor/bin \
@@ -43,6 +44,11 @@ RUN apt-get update && \
 
 RUN git clone -b $MAPS_API_VERSION -- https://github.com/CartoDB/Windshaft-cartodb.git /app && \
     cd /app && \
+    npm config set loglevel info && \
+    npm install --verbose
+
+RUN git clone -b $CAMSHAFT_VERSION -- https://github.com/CartoDB/camshaft.git /tmp/camshaft && \
+    cd /tmp/camshaft && \
     npm config set loglevel info && \
     npm install --verbose
 

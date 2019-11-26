@@ -45,8 +45,8 @@ var config = {
         }
     }
     ,resources_url_templates: {
-        http: 'http://{{=it.cdn_url}}/{{=it.user}}/api/v1/map',
-        https: 'https://{{=it.cdn_url}}/{{=it.user}}/api/v1/map'
+        http: 'http://{{=it.cdn_url}}/user/{{=it.user}}/api/v1/map',
+        https: 'https://{{=it.cdn_url}}/user/{{=it.user}}/api/v1/map'
     }
     ,maxConnections:128
     ,maxUserTemplates:1024
@@ -193,7 +193,7 @@ var config = {
             //  - running an standalone server without any dependency on external services
             inlineExecution: false,
             // where the SQL API is running, it will use a custom Host header to specify the username.
-            endpoint: '${CARTODB_SQL_PRIVATE_URI}/api/v2/sql/job',
+            endpoint: '${CARTODB_SQL_API_PRIVATE_URI}/api/v2/sql/job',
             // the template to use for adding the host header in the batch api requests
             hostHeaderTemplate: '{{=it.username}}.localhost.lan'
         },
@@ -267,8 +267,8 @@ var config = {
     ,useProfiler:false
     ,serverMetadata: {
       cdn_url: {
-        http: undefined, // 'api.cartocdn.com',
-        https: undefined, // 'cartocdn.global.ssl.fastly.net'
+        http: '', // '${CARTODB_DOMAIN}/user',
+        https: '' // '${CARTODB_DOMAIN}/user'
       }
     }
     ,health: {

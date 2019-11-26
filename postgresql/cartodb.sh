@@ -47,7 +47,7 @@ psql -c "GRANT ALL ON spatial_ref_sys TO public;"
 psql -c "GRANT ALL ON geometry_columns TO $POSTGRES_DB;"
 psql -c "GRANT ALL ON spatial_ref_sys TO $POSTGRES_DB;"
 psql -c "CREATE EXTENSION cartodb;"
-psql -c "CREATE EXTENSION crankshaft VERSION 'dev';"
+psql -c "CREATE EXTENSION crankshaft version dev;"
 psql -c "CREATE EXTENSION cdb_geocoder schema public;"
 psql -c "CREATE EXTENSION cdb_dataservices_server;"
 psql -c "CREATE EXTENSION cdb_dataservices_client;"
@@ -60,9 +60,9 @@ psql -c "CREATE EXTENSION cdb_dataservices_client;"
 # echo "Creating database 'template_postgis'..."
 createdb -T template0 -O $PGUSER -U $PGUSER -E UTF8 template_postgis
 echo "Creating extensions 'postgis' and 'postgis_topology' on database 'template_postgis'..."
-for ext in postgis postgis_topology fuzzystrmatch postgis_tiger_geocoder; do # uuid-ossp cartodb; do
+for ext in postgis postgis_topology fuzzystrmatch postgis_tiger_geocoder "crankshaft version dev"; do # uuid-ossp cartodb; do
   echo "Creating extension ${ext} on database template_postgis"
-  psql -U "$PGUSER" template_postgis -v ON_ERROR_STOP=1 -Atc "create extension if not exists \"${ext}\" cascade;";
+  psql -U "$PGUSER" template_postgis -v ON_ERROR_STOP=1 -Atc "create extension if not exists ${ext} cascade;";
 done
 
 echo "Creating database 'dataservices_db'..."
@@ -75,4 +75,4 @@ echo "Configure dataservices_db'..."
 psql -U "$PGUSER" dataservices_db -c "SELECT CDB_Conf_SetConf('redis_metadata_config', '{\"redis_host\": \"$REDIS_HOST\", \"redis_port\": 6379, \"sentinel_master_id\": \"\", \"timeout\": 0.1, \"redis_db\": 5}');"
 psql -U "$PGUSER" dataservices_db -c "SELECT CDB_Conf_SetConf('redis_metrics_config', '{\"redis_host\": \"$REDIS_HOST\", \"redis_port\": 6379, \"sentinel_master_id\": \"\", \"timeout\": 0.1, \"redis_db\": 5}');"
 psql -U "$PGUSER" dataservices_db -c "SELECT CDB_Conf_SetConf('heremaps_conf', '{\"geocoder\": {\"app_id\": \"$HERE_APP_ID\", \"app_code\": \"$HERE_APP_CODE\", \"geocoder_cost_per_hit\": \"1\"}, \"isolines\" : {\"app_id\": \"$HERE_APP_ID\", \"app_code\": \"$HERE_APP_CODE\"}}');"
-Psql -U "$PGUSER" dataservices_db -x "SELECT CDB_Conf_SetConf('mapbox_conf', '{\"routing\": {\"api_keys\": [\"$MAPBOX_API_TOKEN\"], \"monthly_quota\": 999999}, \"geocoder\": {\"api_keys\": [\"$MAPBOX_API_TOKEN\"], \"monthly_quota\": 999999}, \"matrix\": {\"api_keys\": [\"$MAPBOX_API_TOKEN\"], \"monthly_quota\": 1500000}}');"
+psql -U "$PGUSER" dataservices_db -c "SELECT CDB_Conf_SetConf('mapbox_conf', '{\"routing\": {\"api_keys\": [\"$MAPBOX_API_TOKEN\"], \"monthly_quota\": 999999}, \"geocoder\": {\"api_keys\": [\"$MAPBOX_API_TOKEN\"], \"monthly_quota\": 999999}, \"matrix\": {\"api_keys\": [\"$MAPBOX_API_TOKEN\"], \"monthly_quota\": 1500000}}');"
