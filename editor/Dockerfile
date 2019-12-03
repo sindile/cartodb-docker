@@ -2,11 +2,12 @@
 
 FROM alpine:3.4 AS source
 
+ARG APP_ENV=production
 ARG CARTODB_VERSION=master
 
 COPY ./grunt_production.json /grunt_production.json
 RUN apk add --no-cache --upgrade git && \
-    git clone --recursive -b $CARTODB_VERSION -- https://github.com/CartoDB/cartodb.git /app && \
+    git clone --recursive --branch "v$CARTODB_VERSION" --single-branch -- https://github.com/CartoDB/cartodb.git /app && \
     cd /app && \
     mv /grunt_production.json /app/config && \
     tar -czvf app.tar.gz Gemfile Gemfile.lock config.ru Rakefile \

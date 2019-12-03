@@ -9,7 +9,7 @@ ARG GDAL_VERSION=2.2.4
 ARG POSTGRES_USER=cartodb
 ARG POSTGRES_PASSWORD=cartodb
 ARG CRANKSHAFT_VERSION=master
-ENV OBSERVATORY_VERSION=master
+ARG OBSERVATORY_VERSION=master
 
 RUN localedef -i ru_RU -c -f UTF-8 -A /usr/share/locale/locale.alias ru_RU.UTF-8
 
@@ -42,6 +42,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cd /tmp/dataservices-api/server/extension && \
     make install && \
     cd /tmp/dataservices-api/server/lib/python/cartodb_services && \
+    pip install wheel && \
     pip install -r requirements.txt && \
     pip install . --upgrade && \
     python setup.py install &&\
@@ -50,9 +51,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cd /tmp/data-services/geocoder/extension && \
     make install && \
     cd /tmp && \
-    git clone --branch $CRANKSHAFT_VERSION https://github.com/CartoDB/crankshaft.git && \
+    git clone --branch $CRANKSHAFT_VERSION --single-branch https://github.com/CartoDB/crankshaft.git && \
     cd crankshaft && \
-    git checkout $CRANKSHAFT_VERSION && \
+    pip install numpy scipy joblib && \
     make install && \
     pip install --force-reinstall --no-cache-dir scikit-learn==0.17.0 && \
     mkdir -p /docker-entrypoint-initdb.# Observatory extension

@@ -1,41 +1,48 @@
 version: '3.6'
 
-x-environment: &default_env
-  SQL_API_VERSION: 3.0.0
-  MAPS_API_VERSION: 7.1.0
-  CARTODB_VERSION: 4.29.0
-  CDB_VALID_VERSION: 0.31.0
-  POSTGIS_VERSION: 2.4.8
-  GEOS_VERSION: 3.5.0
-  APP_ENV: production
-  RACK_ENV: production
-  RAILS_ENV: production
-  NODE_ENV: production
-  DEBUG: 1
-  LOG_LEVEL: debug
-  DEFAULT_USER_LOGIN: cartodb
-  DEFAULT_USER_EMAIL: example+cartodb@gmail.com
-  DEFAULT_USER_PASSWORD: cartodb
-  POSTGRES_USER: cartodb
-  POSTGRES_PASSWORD: cartodb
-  POSTGRES_DB: cartodb
-  POSTGRES_HOST: db
-  REDIS_HOST: redis
-  DATABASE_URL: postgres://cartodb:cartodb@db/cartodb
-  RAILS_PUBLIC_UPLOADS_PATH: /uploads
-  CARTODB_DOMAIN: cartodb.localhost.lan
-  CARTODB_PASSWORD_SECRET: 96f3903532f3119c83199442937ef699b0ec425d0bc7a938624a6ff56b3e6acf9fc71316d2c68ba4f3d23d100bbd4e1b31b3a47051424e4d4f42d3ed09704cfc
-  CARTODB_SECRET_KEY_BASE: 1574f92e90957a2d3e6c9dacd5c8dac587157e8b290792de2dddc7ad7fd9f70b351665201de50580dfbc6cb6462696d4b844b30357dc0ee7a1767b04ea9f4c0e
-  CARTODB_SECRET_TOKEN: cb20d3bfd6c481947984ec368df53784aa2349cde21dc5c771c3a3b5b71bb674
-  CARTODB_SUBDOMAINLESS_URLS: 'true'
-  CARTODB_TILER_INTERNAL_URI: 'http://mapsapi/'
-  CARTODB_TILER_PRIVATE_URI: 'https://cartodb.localhost.lan/'
-  CARTODB_TILER_PUBLIC_URI: 'https://cartodb.localhost.lan/'
-  CARTODB_SQL_API_PUBLIC_URI: 'https://cartodb.localhost.lan/'
-  CARTODB_SQL_API_PRIVATE_URI: 'http://sqlapi/'
-  HERE_APP_ID: heregeocoderappid
-  HERE_APP_CODE: heregeocoderappcode
-  MAPBOX_API_TOKEN: mapboxapitoken
+x-environment: &app_env
+  - APP_ENV=production
+  - CAMSHAFT_VERSION=0.65.0
+  - CARTODB_DOMAIN=cartodb.localhost.lan
+  - CARTODB_PASSWORD_SECRET=96f3903532f3119c83199442937ef699b0ec425d0bc7a938624a6ff56b3e6acf9fc71316d2c68ba4f3d23d100bbd4e1b31b3a47051424e4d4f42d3ed09704cfc
+  - CARTODB_SECRET_KEY_BASE=1574f92e90957a2d3e6c9dacd5c8dac587157e8b290792de2dddc7ad7fd9f70b351665201de50580dfbc6cb6462696d4b844b30357dc0ee7a1767b04ea9f4c0e
+  - CARTODB_SECRET_TOKEN=cb20d3bfd6c481947984ec368df53784aa2349cde21dc5c771c3a3b5b71bb674
+  - CARTODB_SQL_API_PRIVATE_URI=http://sqlapi/
+  - CARTODB_SQL_API_PUBLIC_URI=https://cartodb.localhost.lan/
+  - CARTODB_SUBDOMAINLESS_URLS=true
+  - CARTODB_TILER_INTERNAL_URI=http://mapsapi/
+  - CARTODB_TILER_PRIVATE_URI=https://cartodb.localhost.lan/
+  - CARTODB_TILER_PUBLIC_URI=https://cartodb.localhost.lan/
+  - CARTODB_VERSION=4.29.0
+  - CDB_VALID_VERSION=0.28.1
+  - CRANKSHAFT_VERSION=master
+  - DATABASE_URL=postgres://cartodb:cartodb@db/cartodb
+  - DEBUG=1
+  - DEFAULT_USER_EMAIL=example+cartodb@gmail.com
+  - DEFAULT_USER_LOGIN=cartodb
+  - DEFAULT_USER_PASSWORD=cartodb
+  - GDAL_VERSION=2.2.4
+  - GEOS_VERSION=3.5.2
+  - HERE_APP_CODE=heregeocoderappcode
+  - HERE_APP_ID=heregeocoderappid
+  - LOG_LEVEL=debug
+  - MAPBOX_API_TOKEN=mapboxapitoken
+  - MAPNIK_NODE_VERSION=v3.6.2
+  - MAPNIK_VERSION=v3.0.22
+  - MAPS_API_VERSION=7.1.0
+  - NODE_ENV=production
+  - OBSERVATORY_VERSION=master
+  - POSTGIS_VERSION=2.4.8
+  - POSTGRES_DB=cartodb
+  - POSTGRES_HOST=db
+  - POSTGRES_PASSWORD=cartodb
+  - POSTGRES_USER=cartodb
+  - PROJ_VERSION=4.9.3
+  - RACK_ENV=production
+  - RAILS_ENV=production
+  - RAILS_PUBLIC_UPLOADS_PATH=/uploads
+  - REDIS_HOST=redis
+  - SQL_API_VERSION=3.0.0
 
 x-logging: &default_logging
   options:
@@ -43,7 +50,6 @@ x-logging: &default_logging
     max-file: '5'
     labels: "{{.Name}}"
   driver: json-file
-
 
 services:
   proxy: # The container to proxy all HTTP and HTTP request to container with static
@@ -65,7 +71,8 @@ services:
     image: cartodb-app
     build:
       context: editor
-    environment: *default_env
+      args: *app_env
+    environment: *app_env
     depends_on:
       - backend
     links:
@@ -80,9 +87,10 @@ services:
     image: cartodb-app
     build:
       context: editor
+      args: *app_env
+    environment: *app_env
     volumes:
       - upload_data:/uploads
-    environment: *default_env
     depends_on:
       - db
       - redis
@@ -103,7 +111,8 @@ services:
     image: cartodb-app
     build:
       context: editor
-    environment: *default_env
+      args: *app_env
+    environment: *app_env
     volumes:
       - upload_data:/uploads
     depends_on:
@@ -122,7 +131,8 @@ services:
     image: cartodb-sqlapi
     build:
       context: sql_api
-    environment: *default_env
+      args: *app_env
+    environment: *app_env
     depends_on:
       - db
       - redis
@@ -134,7 +144,8 @@ services:
     image: cartodb-mapsapi
     build:
       context: maps_api
-    environment: *default_env
+      args: *app_env
+    environment: *app_env
     depends_on:
       - db
       - redis
@@ -152,6 +163,8 @@ services:
   db:
     build:
       context: postgresql
+      args: *app_env
+    environment: *app_env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     logging: *default_logging
