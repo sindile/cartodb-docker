@@ -2,7 +2,7 @@
 FROM node:10-alpine AS build
 
 ARG APP_ENV=production
-ARG SQL_API_VERSION=3.0.0
+ARG SQL_API_VERSION=5.0.1
 
 ENV NODE_ENV=$APP_ENV \
     PATH=$PATH:/vendor/bin \
@@ -19,14 +19,15 @@ RUN apk add --no-cache --update build-base \
                                 icu-dev \
                                 curl \
                                 ca-certificates && \
-    git clone -b $SQL_API_VERSION -- https://github.com/CartoDB/CartoDB-SQL-API.git /app && \
+    git clone https://github.com/CartoDB/CartoDB-SQL-API.git /app && \
     cd /app && \
+    git checkout $SQL_API_VERSION && \
+    mkdir -p /app/logs && \
     npm config set loglevel info && \
     npm install --verbose
 
 WORKDIR /app
 
-RUN npm install
 
 COPY ./docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh

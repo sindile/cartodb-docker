@@ -2,7 +2,7 @@ version: '3.6'
 
 x-environment: &app_env
   - APP_ENV=production
-  - CAMSHAFT_VERSION=0.65.0
+  - CAMSHAFT_VERSION=0.65.2
   - CARTODB_DOMAIN=cartodb.localhost.lan
   - CARTODB_PASSWORD_SECRET=96f3903532f3119c83199442937ef699b0ec425d0bc7a938624a6ff56b3e6acf9fc71316d2c68ba4f3d23d100bbd4e1b31b3a47051424e4d4f42d3ed09704cfc
   - CARTODB_SECRET_KEY_BASE=1574f92e90957a2d3e6c9dacd5c8dac587157e8b290792de2dddc7ad7fd9f70b351665201de50580dfbc6cb6462696d4b844b30357dc0ee7a1767b04ea9f4c0e
@@ -13,9 +13,9 @@ x-environment: &app_env
   - CARTODB_TILER_INTERNAL_URI=http://mapsapi/
   - CARTODB_TILER_PRIVATE_URI=https://cartodb.localhost.lan/
   - CARTODB_TILER_PUBLIC_URI=https://cartodb.localhost.lan/
-  - CARTODB_VERSION=4.29.0
-  - CDB_VALID_VERSION=0.28.1
-  - CRANKSHAFT_VERSION=master
+  - CARTODB_VERSION=4.35.0
+  - CDB_VALID_VERSION=0.36.0
+  - CRANKSHAFT_VERSION=0.9.0
   - DATABASE_URL=postgres://cartodb:cartodb@db/cartodb
   - DEBUG=1
   - DEFAULT_USER_EMAIL=example+cartodb@gmail.com
@@ -32,7 +32,7 @@ x-environment: &app_env
   - MAPS_API_VERSION=7.1.0
   - NODE_ENV=production
   - OBSERVATORY_VERSION=master
-  - POSTGIS_VERSION=2.4.8
+  - POSTGIS_VERSION=3.0.1
   - POSTGRES_DB=cartodb
   - POSTGRES_HOST=db
   - POSTGRES_PASSWORD=cartodb
@@ -42,7 +42,8 @@ x-environment: &app_env
   - RAILS_ENV=production
   - RAILS_PUBLIC_UPLOADS_PATH=/uploads
   - REDIS_HOST=redis
-  - SQL_API_VERSION=3.0.0
+  - SQL_API_VERSION=5.0.1
+  - DEFAULT_MAX_LAYERS=256
 
 x-logging: &default_logging
   options:
@@ -99,7 +100,7 @@ services:
       - db
       - sqlapi
       - mapsapi
-    command: unicorn -l 0.0.0.0:80
+    command: sh -l -c "bundle exec unicorn -l 0.0.0.0:80"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost"]
       interval: 1m
@@ -125,7 +126,7 @@ services:
       - redis
       - sqlapi
       - mapsapi
-    command: bundle exec script/resque
+    command: sh -l -c "bundle exec script/resque"
     logging: *default_logging
   sqlapi:
     image: cartodb-sqlapi

@@ -38,8 +38,9 @@ psql -c "DROP EXTENSION IF EXISTS cdb_dataservices_client CASCADE;"
 psql -c "DROP SCHEMA IF EXISTS cdb_dataservices_client CASCADE;"
 psql -c "DROP USER IF EXISTS publicuser;"
 psql -c "CREATE EXTENSION plproxy;"
-psql -c "CREATE EXTENSION plpythonu;"
-psql -c "CREATE EXTENSION postgis;"
+psql -c "CREATE EXTENSION plpython3u;"
+psql -c "CREATE EXTENSION postgis SCHEMA public;"
+psql -c "CREATE EXTENSION postgis_raster SCHEMA public;"
 psql -c "CREATE EXTENSION postgis_topology;"
 psql -c "CREATE USER publicuser;"
 psql -c "GRANT ALL ON geometry_columns TO public;"
@@ -48,7 +49,7 @@ psql -c "GRANT ALL ON geometry_columns TO $POSTGRES_DB;"
 psql -c "GRANT ALL ON spatial_ref_sys TO $POSTGRES_DB;"
 psql -c "CREATE EXTENSION cartodb;"
 psql -c "CREATE EXTENSION crankshaft version dev;"
-psql -c "CREATE EXTENSION cdb_geocoder schema public;"
+psql -c "CREATE EXTENSION cdb_geocoder SCHEMA public;"
 psql -c "CREATE EXTENSION cdb_dataservices_server;"
 psql -c "CREATE EXTENSION cdb_dataservices_client;"
 
@@ -60,7 +61,7 @@ psql -c "CREATE EXTENSION cdb_dataservices_client;"
 # echo "Creating database 'template_postgis'..."
 createdb -T template0 -O $PGUSER -U $PGUSER -E UTF8 template_postgis
 echo "Creating extensions 'postgis' and 'postgis_topology' on database 'template_postgis'..."
-for ext in postgis postgis_topology fuzzystrmatch postgis_tiger_geocoder "crankshaft version dev"; do # uuid-ossp cartodb; do
+for ext in postgis postgis_raster postgis_topology fuzzystrmatch postgis_tiger_geocoder "crankshaft version dev"; do # uuid-ossp cartodb; do
   echo "Creating extension ${ext} on database template_postgis"
   psql -U "$PGUSER" template_postgis -v ON_ERROR_STOP=1 -Atc "create extension if not exists ${ext} cascade;";
 done
