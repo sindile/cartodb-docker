@@ -9,7 +9,8 @@ RUN ARCH=$(apk --print-arch | sed 's/x86_64/amd64/') && \
     | tar -xz -C /tmp && \
   mv /tmp/caddy /usr/bin/caddy
 
-COPY ./Caddyfile /etc/caddy/
+#COPY ./Caddyfile /etc/caddy/
+COPY Caddyfile /etc/caddy/
 
 EXPOSE 80 443
 CMD ["caddy", "-conf", "/etc/caddy/Caddyfile"]
