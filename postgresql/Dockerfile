@@ -21,7 +21,7 @@ ENV POSTGRES_USER=${POSTGRES_USER:-cartodb} \
     PYTHON3=true
 
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get remove -y python2.7 python2.7-minimal libpython2.7 libpython2.7-stdlib libpython2.7-minimal
+#RUN apt-get remove -y python2.7 python2.7-minimal libpython2.7 libpython2.7-stdlib libpython2.7-minimal
 RUN apt-get update --allow-unauthenticated --allow-insecure-repositories && apt-get install -y --no-install-recommends \
     build-essential software-properties-common \
     proj-bin proj-data libproj-dev \
