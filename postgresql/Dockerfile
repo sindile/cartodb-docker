@@ -9,6 +9,8 @@ ARG GDAL_VERSION=2.2.4
 ARG POSTGRES_USER=cartodb
 ARG POSTGRES_PASSWORD=cartodb
 ARG CRANKSHAFT_VERSION=0.9.0
+ARG DATASERVICESAPI_VERSION=master
+ARG DATASERVICES_VERSION=master
 ARG OBSERVATORY_VERSION=master
 
 RUN localedef -i ru_RU -c -f UTF-8 -A /usr/share/locale/locale.alias ru_RU.UTF-8
@@ -46,8 +48,9 @@ RUN apt-get update --allow-unauthenticated --allow-insecure-repositories && apt-
     cd /tmp && \
     git clone -- https://github.com/CartoDB/dataservices-api.git /tmp/dataservices-api && \
     cd /tmp/dataservices-api && \
-    git checkout "pg12_migration" && \
+    git checkout $DATASERVICESAPI_VERSION && \
     cd /tmp/dataservices-api/server/extension && \
+    git checkout $DATASERVICES_VERSION && \
     make all install && \
     cd /tmp/dataservices-api/client && \
     make all install && \
